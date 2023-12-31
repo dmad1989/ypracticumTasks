@@ -2,6 +2,9 @@ package main
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAddNew(t *testing.T) {
@@ -55,11 +58,14 @@ func TestAddNew(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			err := test.initFamily.AddNew(test.role, test.person)
 			t.Log(test.name)
-			if err != test.waitError {
-				t.Errorf("Error got = %s, want %s", err, test.waitError)
-			}
+
+			require.Equal(t, test.waitError, err, "Error got = %s, want %s", err, test.waitError)
 
 			for k, val := range test.initFamily.Members {
+				waitVal := test.waitFamily.Members[k]
+				assert.NotEqual(t, waitVal, (Person{}), "No with such Role accepted %s", k)
+				assert.EqualExportedValuesf(t, waitVal, val, "Wrong person was created: %+v, want %+v", val, waitVal)
+
 				if waitVal := test.waitFamily.Members[k]; waitVal != (Person{}) {
 					if val.Age != waitVal.Age || val.FirstName != waitVal.FirstName || val.LastName != waitVal.LastName {
 						t.Errorf("Wrong person was created: %+v, want %+v", val, waitVal)

@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestAbs(t *testing.T) {
 	tests := []struct {
@@ -43,10 +47,8 @@ func TestAbs(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(y *testing.T) {
-			if absVal := Abs(test.value); absVal != test.want {
-				t.Errorf("Abs() = %f, want %f", absVal, test.want)
-			}
-
+			res := Abs(test.value)
+			assert.Equal(t, test.want, res, "Abs() = %f, want %f", res, test.want)
 		})
 	}
 }
