@@ -18,11 +18,8 @@ func main() {
 		panic(err)
 	}
 
-	for k, v := range body {
-		if k == 513 {
-			break
-		}
-		fmt.Printf("byte %d, value %d", k, v)
-		fmt.Println()
+	if len(body) > 512 {
+		body = body[:512]
 	}
+	fmt.Print(string(body))
 }
