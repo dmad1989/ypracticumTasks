@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strings"
+
+	chi "github.com/go-chi/chi/v5"
 )
 
 var cars = map[string]string{
@@ -36,24 +39,26 @@ func carFunc(id string) string {
 }
 
 func carsHandle(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("carsHandle")
 	carsList := carsListFunc()
+	fmt.Println("carsList", carsList)
 	io.WriteString(rw, strings.Join(carsList, ", "))
 }
 
 func carHandle(rw http.ResponseWriter, r *http.Request) {
-	carID := r.URL.Query().Get("id")
+	carID := chi.URLParam(r, "id")
 	if carID == "" {
-		http.Error(rw, "carID param is missed", http.StatusBadRequest)
+		http.Error(rw, "id param is missed", http.StatusBadRequest)
 		return
 	}
 	rw.Write([]byte(carFunc(carID)))
 }
 
 func main() {
+	r := chi.NewRouter()
 	// определяем хендлер, который выводит все машины
-	http.HandleFunc("/cars", carsHandle)
+	r.Get("/cars", carsHandle)
 	// определяем хендлер, который выводит определённую машину
-	http.HandleFunc("/car", carHandle)
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r.Get("/car/{id}", carHandle)
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
