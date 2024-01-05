@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -39,9 +38,7 @@ func carFunc(id string) string {
 }
 
 func carsHandle(rw http.ResponseWriter, r *http.Request) {
-	fmt.Println("carsHandle")
 	carsList := carsListFunc()
-	fmt.Println("carsList", carsList)
 	io.WriteString(rw, strings.Join(carsList, ", "))
 }
 
