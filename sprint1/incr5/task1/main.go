@@ -8,7 +8,9 @@ import (
 )
 
 type Config struct {
-	User string `env:"USERNAME"` // укажите тег env
+	User        string `env:"USERNAME"` // укажите тег env
+	Addr        string `env:"SERVER_ADDRESS"`
+	shortAddres string `env:"BASE_URL"`
 }
 
 func main() {
@@ -18,4 +20,6 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Current user is %s\n", cfg.User)
+	fmt.Println(cfg.Addr)
+	fmt.Printf("shortAddres is %s\n", cfg.shortAddres)
 }

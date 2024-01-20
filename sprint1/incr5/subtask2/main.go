@@ -22,4 +22,5 @@ func main() {
 	}
 
 	log.Println(cfg)
+	log.Println(cfg.TaskDuration)
 }
