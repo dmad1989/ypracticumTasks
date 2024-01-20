@@ -3,18 +3,15 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 )
 
 func main() {
 	var buf bytes.Buffer
-	// допишите код
-	// 1) создайте переменную типа *log.Logger
-	// 2) запишите в неё нужные строки
+	mylog := log.New(&buf, "", 0)
 
-	// ...
+	mylog.Println("Hello world!")
+	mylog.Println("Goodbye")
 
 	fmt.Print(&buf)
-	// должна вывести
-	// mylog: Hello, world!
-	// mylog: Goodbye
 }
