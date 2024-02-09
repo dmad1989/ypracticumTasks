@@ -83,18 +83,23 @@ func readVideoCSV(csvFile string) ([]Video, error) {
 }
 
 func insertVideos(ctx context.Context, db *sql.DB, videos []Video) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
 	for _, v := range videos {
 		// в этом случае возвращаемое значение не несёт полезной информации,
 		// поэтому его можно игнорировать
-		_, err := db.ExecContext(ctx,
+		_, err := tx.ExecContext(ctx,
 			"INSERT INTO videos (video_id, title, publish_time, tags, views)"+
 				" VALUES(?,?,?,?,?)", v.Id, v.Title, v.PublishTime,
 			strings.Join(v.Tags, `|`), v.Views)
 		if err != nil {
+			tx.Rollback()
 			return err
 		}
 	}
-	return nil
+	return tx.Commit()
 }
 
 func main() {
