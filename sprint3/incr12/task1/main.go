@@ -87,15 +87,17 @@ func insertVideos(ctx context.Context, db *sql.DB, videos []Video) error {
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
+	stmt, err := tx.PrepareContext(ctx, "INSERT INTO videos (video_id, title, publish_time, tags, views)"+
+		" VALUES(?,?,?,?,?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
 	for _, v := range videos {
-		// в этом случае возвращаемое значение не несёт полезной информации,
-		// поэтому его можно игнорировать
-		_, err := tx.ExecContext(ctx,
-			"INSERT INTO videos (video_id, title, publish_time, tags, views)"+
-				" VALUES(?,?,?,?,?)", v.Id, v.Title, v.PublishTime,
-			strings.Join(v.Tags, `|`), v.Views)
+		_, err = stmt.ExecContext(ctx, v.Id, v.Title, v.PublishTime, strings.Join(v.Tags, `|`), v.Views)
 		if err != nil {
-			tx.Rollback()
 			return err
 		}
 	}
