@@ -1,0 +1,48 @@
+go run ./cmd/shortener/main.go -d 'host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable'
+
+go tool pprof -http=":9090" -seconds=30 heap.out 
+
+
+curl http://localhost:8080/debug/pprof/profile > ./profiles/base.pprof
+
+
+
+
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" status
+
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" status create init sql
+
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00002_create_users_table sql
+
+
+mockgen '-destination=internal/mocks/mock_store.go -package=mocks internal/config/config Config'
+
+easyjson -all internal/jsonobject/jsonobject.go
+
+go run ./main.go -d 'host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable'
+
+go run ./cmd/gophermart/main.go -d 'host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable'
+
+
+go run ./cmd/gophermart/main.go -d 'host=localhost port=5432 user=postgres password=admin1 dbname=gophermart sslmode=disable'
+
+
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00001_create_users_table sql
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00002_create_orders_table sql
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00002_create_withdrawls_table sql
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00004_create_status_table sql
+goose postgres "host=localhost port=5432 user=postgres password=admin1 dbname=postgres sslmode=disable" create 00005_fill_status_table sql
+
+
+easyjson -all jsonobject.go
+
+
+go run ./cmd/gophermart/main.go -d 'host=localhost port=5432 user=postgres password=admin1 dbname=gophermart sslmode=disable' -r 'http://localhost:8080' -a 'localhost:8181'
+
+//cmd
+go test ./internal/cutter -bench=. -memprofile=./profiles/base2.pprof
+-memprofile=mem.out
+
+go tool pprof -http=":9090" ./profiles/base2.pprof
+
+go tool pprof -http=":9191" ./profiles/result2.pprof
