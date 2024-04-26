@@ -1,4 +1,4 @@
-module  github.com/dmad1989/ypracticumtasks/sprint8/incr19/mycheck
+module github.com/dmad1989/ypracticumtasks/sprint8/incr19/mycheck
 
 go 1.21.3
 
