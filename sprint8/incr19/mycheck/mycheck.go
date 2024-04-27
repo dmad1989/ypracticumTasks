@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dmad1989/ypracticumTasks/tree/master/sprint8/incr19/errcheckanalyzer"
 	"golang.org/x/tools/go/analysis/multichecker"
 	"golang.org/x/tools/go/analysis/passes/printf"
 	"golang.org/x/tools/go/analysis/passes/shadow"
@@ -14,5 +15,6 @@ func main() {
 		shadow.Analyzer,
 		structtag.Analyzer,
 		shift.Analyzer,
+		errcheckanalyzer.ErrCheckAnalyzer,
 	)
 }

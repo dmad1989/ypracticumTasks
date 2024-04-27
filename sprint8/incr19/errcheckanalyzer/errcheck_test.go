@@ -1,4 +1,4 @@
-package errcheck
+package main
 
 import (
 	"testing"
