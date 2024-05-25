@@ -46,3 +46,6 @@ go test ./internal/cutter -bench=. -memprofile=./profiles/base2.pprof
 go tool pprof -http=":9090" ./profiles/base2.pprof
 
 go tool pprof -http=":9191" ./profiles/result2.pprof
+
+go:embed config.json
+// var config []byte
