@@ -49,3 +49,8 @@ go tool pprof -http=":9191" ./profiles/result2.pprof
 
 go:embed config.json
 // var config []byte
+
+
+
+
+go test -v -coverpkg./... -coverpkg=./... -coverprofile=coverage.out -covermode=count ./...
