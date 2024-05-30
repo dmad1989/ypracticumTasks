@@ -11,6 +11,8 @@ import (
 	"sync"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // UsersServer поддерживает все необходимые методы сервера.
@@ -68,7 +70,7 @@ func (s *UsersServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.G
 	if u, ok := s.users.Load(in.Email); ok {
 		response.User = u.(*pb.User)
 	} else {
-		response.Error = fmt.Sprintf("Пользователь c email %s не найден", in.Email)
+		return nil, status.Errorf(codes.NotFound, `Пользователь с email %s не найден`, in.Email)
 	}
 
 	return &response, nil

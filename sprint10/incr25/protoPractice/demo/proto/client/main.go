@@ -6,9 +6,12 @@ import (
 	pb "demo/proto"
 	"fmt"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 func main() {
@@ -63,11 +66,22 @@ func TestUsers(c pb.UsersClient) {
 	// во втором случае должна вернуться ошибка:
 	// пользователь с email serge@example.com не найден
 	for _, userEmail := range []string{"sveta@example.com", "serge@example.com"} {
-		resp, err := c.GetUser(context.Background(), &pb.GetUserRequest{
+		ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+		defer cancel()
+		resp, err := c.GetUser(ctx, &pb.GetUserRequest{
 			Email: userEmail,
 		})
 		if err != nil {
-			log.Fatal(err)
+			if e, ok := status.FromError(err); ok {
+				switch e.Code() {
+				case codes.NotFound, codes.DeadlineExceeded:
+					fmt.Println(e.Message())
+				default:
+					fmt.Println(e.Code(), e.Message())
+				}
+			} else {
+				fmt.Printf("Не получилось распарсить ошибку %v", err)
+			}
 		}
 		if resp.Error == "" {
 			fmt.Println(resp.User)
